@@ -1,0 +1,64 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// prisma.schema
+
+model User {
+  id         Int         @id @default(autoincrement())
+  email      String      @unique
+  name       String?
+  role       Role        @default(USER)
+  password   String?
+  isVerified Boolean     @default(false)
+  Bookings   Bookings[]
+  Feedbacks  Feedbacks[]
+  createdAt  DateTime    @default(now())
+}
+
+model Token {
+  id        Int      @id @default(autoincrement())
+  userId    Int?     @unique
+  token     String   @default("")
+  createdAt DateTime @default(now())
+}
+
+model Bookings {
+  id              Int           @id @default(autoincrement())
+  location        String?
+  bookingDateTime DateTime?
+  bookingHours    String?
+  registrationNo  String?
+  selectedSlotNo  String?
+  status          BookingStatus @default(PENDING)
+  user            User?         @relation(fields: [userId], references: [id])
+  userId          Int?
+  createdAt       DateTime      @default(now())
+}
+
+model Feedbacks {
+  id        Int      @id @default(autoincrement())
+  message   String
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    Int?
+  createdAt DateTime @default(now())
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum BookingStatus {
+  PENDING
+  APPROVED
+  CANCELED
+}

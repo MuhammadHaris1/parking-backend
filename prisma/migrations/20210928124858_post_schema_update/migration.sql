@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Post" ALTER COLUMN "foundDate" SET DATA TYPE TEXT;
