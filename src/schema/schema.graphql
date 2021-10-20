@@ -12,23 +12,13 @@ type User {
   isVerified: Boolean
 }
 
-# type Post {
-#   id: Int!      
-#   category: String!
-#   color:    String!  
-#   location: String! 
-#   foundDate: String!  
-#   title:     String
-#   description: String   
-#   user:      User   
-#   userId:    Int!                          
-# }
-
 type Feedbacks {
   id: Int! 
   message: String!
   user: User   
-  userId: Int!  
+  userId: Int!
+  bookingId: Int!
+  Booking: Bookings
 }
 
 type Bookings {
@@ -38,8 +28,10 @@ type Bookings {
   bookingHours: String!
   registrationNo: String!
   selectedSlotNo: String!
+  status: BookingStatus!
   user: User
-  userId: Int!          
+  userId: Int!
+  Feedbacks: [Feedbacks]         
 }
 
 type Token {
@@ -52,22 +44,37 @@ type Token {
 
 type Query {
   getAllUsers: [User]
-  # getAllPosts: [Post]
   loginUser(email: String, password: String): User!
+  getAllBookings: [Bookings]
+  getBookingById(id: Int!): Bookings!
+  getBookingsByUserId(userId: Int!): [Bookings]
+  getFeedbacksByUserId(userId: Int!): [Feedbacks]
+  getFeedbacksByBookingId(bookingId: Int!): [Feedbacks]
+  getAllFeedbacks: [Feedbacks]
 }
 
 type Mutation {
-    addUser(email: String!, name: String, password: String): User
-    changePassword(id: Int!, currentPassword: String!, newPassword: String!): User
-    deleteUser(id: Int!): [User]
-    # addPost(category: String!, color: String!, location: String!, foundDate: String!, title: String!, description: String!, userId: Int!): Post
-    verifyOtp(token: String!, email: String!): User
-    resendOtp(email: String!): User
+  addUser(email: String!, name: String, password: String): User
+  changePassword(id: Int!, currentPassword: String!, newPassword: String!): User
+  deleteUser(id: Int!): [User]
+  verifyOtp(token: String!, email: String!): User
+  resendOtp(email: String!): User
+  addBooking(location: String!, bookingDateTime: Date!, bookingHours: String!, registrationNo: String!, selectedSlotNo: String!,   userId: Int!): Bookings
+  userCancelBooking(userId: Int!, bookingId: Int!): [Bookings]
+  cancelBookingByAdmin(bookingId: Int!): [Bookings]
+  approveBookingByAdmin(bookingId: Int!): [Bookings]
+  addFeedbackByUser(userId: Int!, bookingId: Int!, message: String!): Feedbacks
 }
 
 enum Role {
   USER
   ADMIN
+}
+
+enum BookingStatus {
+  PENDING
+  APPROVED
+  CANCELED
 }
 
 

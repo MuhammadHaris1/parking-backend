@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const createError = require('http-errors');
 const crypto = require('crypto')
 const { signAccessToken } = require("../utils/jwt.js");
+const { sendMail } = require("../utils/mail.js");
 
 const AuthServices = {
     async createUser (data) {
@@ -25,6 +26,7 @@ const AuthServices = {
                 userId: responseData.id
               }
             })
+            sendMail(data.email, "Verify your otp", "click the link to verify your email", `<a href="http://localhost:3000/verifyotp/${token.toString("hex")}">http://localhost:3000/verifyotp/${token.toString("hex")}</a>`)
             return responseData
           } catch (error) {
             return createError(401, error)

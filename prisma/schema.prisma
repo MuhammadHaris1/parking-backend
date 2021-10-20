@@ -41,6 +41,7 @@ model Bookings {
   status          BookingStatus @default(PENDING)
   user            User?         @relation(fields: [userId], references: [id])
   userId          Int?
+  Feedbacks       Feedbacks[]
   createdAt       DateTime      @default(now())
 }
 
@@ -49,6 +50,8 @@ model Feedbacks {
   message   String
   user      User?    @relation(fields: [userId], references: [id])
   userId    Int?
+  bookingId Int?
+  Booking   Bookings? @relation(fields: [bookingId], references: [id])
   createdAt DateTime @default(now())
 }
 
