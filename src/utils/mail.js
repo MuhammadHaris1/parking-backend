@@ -7,7 +7,7 @@ module.exports = {
         // create reusable transporter object using the default SMTP transport
         let transporter = nodemailer.createTransport({
             host: "smtp.gmail.com",
-            port: 587,
+            port: 465,
             auth: {
                 user: "mh4055718@gmail.com", 
                 pass: "iamharisansari",
