@@ -18,7 +18,7 @@ const BookingServices = {
         // const booking = await prisma.$queryRaw`SELECT * FROM bookings`
 
 
-        if(booking) return createError(401, "This slot is booked at this time")
+        // if(booking) return createError(401, "This slot is booked at this time")
   
             const responseData = await prisma.bookings.create({
                 data: data,
