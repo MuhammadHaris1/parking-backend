@@ -84,7 +84,7 @@ const AuthServices = {
       
       const checkPassword = bcrypt.compareSync(data.password, userExist.password)
       if (!checkPassword) return createError('401', 'Email/Password incorrect')
-      if (!userExist.isVerified) return createError('401', 'Please Verify your account')
+      // if (!userExist.isVerified) return createError('401', 'Please Verify your account')
 
       delete userExist.password
       return {...userExist, status: true, message: 'Signin Successful'}

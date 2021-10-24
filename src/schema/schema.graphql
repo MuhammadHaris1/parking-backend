@@ -24,8 +24,8 @@ type Feedbacks {
 type Bookings {
   id: Int!
   location: String!
-  bookingDateTime: Date!
-  bookingHours: String!
+  bookingStartDate: Date!
+  bookingEndDate: Date!
   registrationNo: String!
   selectedSlotNo: String!
   status: BookingStatus!
@@ -59,11 +59,12 @@ type Mutation {
   deleteUser(id: Int!): [User]
   verifyOtp(token: String!, email: String!): User
   resendOtp(email: String!): User
-  addBooking(location: String!, bookingDateTime: Date!, bookingHours: String!, registrationNo: String!, selectedSlotNo: String!,   userId: Int!): Bookings
+  addBooking(location: String!, bookingStartDate: Date!, bookingEndDate: Date!, registrationNo: String!, selectedSlotNo: String!,   userId: Int!): Bookings
   userCancelBooking(userId: Int!, bookingId: Int!): [Bookings]
   cancelBookingByAdmin(bookingId: Int!): [Bookings]
   approveBookingByAdmin(bookingId: Int!): [Bookings]
   addFeedbackByUser(userId: Int!, bookingId: Int!, message: String!): Feedbacks
+  addFeedbackByAdmin(userId: Int!, bookingId: Int!, message: String!): Feedbacks
 }
 
 enum Role {

@@ -33,109 +33,33 @@ const FeedbackServices = {
             return createError(401, error)
         }
     },
-
-    async getBookingById(data) {
-        const booking = await prisma.bookings.findUnique({
-            where: { id: data.id },
-        })
-        if (!booking) return createError(401, 'Booking not exist')
-        try {
-            return booking
-        } catch (error) {
-            return createError(401, error)
-        }
-    },
-
-    async getBookingsByUserId(data) {
-        const booking = await prisma.bookings.findMany({
-            where: { userId: data.userId },
-        })
-        if (!booking) return createError(401, 'Booking not exist')
-        try {
-            return booking
-        } catch (error) {
-            return createError(401, error)
-        }
-    },
-
-    async userCancelBooking(data) {
+    async addFeedbackByAdmin(data) {
         const booking = await prisma.bookings.findFirst({
-            where: { userId: data.userId, id: data.bookingId },
+            where: {
+                id: data.bookingId
+            },
         })
-        if (!booking) return createError(401, 'user not created this booking')
-        try {
-            await prisma.bookings.update({
-                where: {
-                    id: data.bookingId
-                },
-                data: {
-                    status: "CANCELED"
-                }
-            })
-            const userBookings = await prisma.bookings.findMany({
-                where: {
-                    userId: data.userId
-                }
-            })
-            return userBookings
-        } catch (error) {
-            return createError(401, error)
-        }
-    },
-
-    async cancelBookingByAdmin(data) {
-        const booking = await prisma.bookings.findFirst({
-            where: { id: data.bookingId },
-            include: {
-                user: true
-            }
+        if (!booking) return createError(401, 'Booking Not Found')
+        const feedback = await prisma.feedbacks.findFirst({
+            where: {
+                bookingId: data.bookingId,
+                userId: data.userId
+            },
         })
-        if (!booking) return createError(401, 'Booking not exist')
+        if(feedback) return createError(401, "You already add feedback in this booking")
         try {
-            await prisma.bookings.update({
-                where: {
-                    id: data.bookingId
-                },
-                data: {
-                    status: "CANCELED"
-                }
-            })
-            const allBookings = await prisma.bookings.findMany({})
-            return allBookings
-        } catch (error) {
-            return createError(401, error)
-        }
-    },
-
-    async approvedBookingByAdmin(data) {
-        const booking = await prisma.bookings.findFirst({
-            where: { id: data.bookingId },
-            include: {
-                user: true
-            }
-        })
-        if (!booking) return createError(401, 'Booking not exist')
-        try {
-            await prisma.bookings.update({
-                where: {
-                    id: data.bookingId
-                },
-                data: {
-                    status: "APPROVED"
-                }
-            })
-            sendMail(booking.user.email, "You booking approved by admin", `Your booked your parking at ${booking.bookingDateTime} for ${booking.bookingHours} hours`)
-            const allBookings = await prisma.bookings.findMany({
+            const responseData = await prisma.feedbacks.create({
+                data: data,
                 include: {
-                    user: true
+                    user: true,
+                    Booking: true
                 }
             })
-            return allBookings
+            return responseData
         } catch (error) {
             return createError(401, error)
         }
     },
-
 }
 
 module.exports = FeedbackServices

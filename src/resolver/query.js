@@ -22,7 +22,11 @@ const Query = {
         const response = await prisma.bookings.findMany({
             include: {
                 user: true,
-                Feedbacks: true
+                Feedbacks: {
+                    include: {
+                        user: true
+                    }
+                }
             }
         })
         return response

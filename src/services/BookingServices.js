@@ -1,4 +1,5 @@
 const { prisma } = require("../database.js");
+// import { Bookings } from '@prisma/client'
 require('dotenv').config();
 const bcrypt = require('bcryptjs');
 const createError = require('http-errors');
@@ -6,11 +7,19 @@ const { sendMail } = require("../utils/mail.js");
 
 const BookingServices = {
     async createBooking(data) {
+        const stat = "CANCELED"
+        try {
         const user = await prisma.user.findUnique({
             where: { id: data.userId },
         })
         if (!user) return createError(401, 'User not exist')
-        try {
+
+        // const booking = await prisma.$queryRaw`SELECT * FROM "Bookings" WHERE "selectedSlotNo" = ${data.selectedSlotNo} AND "status" != ${stat} AND (date(${data.bookingStartDate}) BETWEEN "bookingStartDate" AND "bookingEndDate" OR ${data.bookingEndDate} BETWEEN "bookingStartDate" AND "bookingEndDate")`
+        // const booking = await prisma.$queryRaw`SELECT * FROM bookings`
+
+
+        if(booking) return createError(401, "This slot is booked at this time")
+  
             const responseData = await prisma.bookings.create({
                 data: data,
                 include: {
@@ -38,6 +47,14 @@ const BookingServices = {
     async getBookingsByUserId(data) {
         const booking = await prisma.bookings.findMany({
             where: { userId: data.userId },
+            include: {
+                user: true,
+                Feedbacks: {
+                    include: {
+                        user: true
+                    }
+                }
+            }
         })
         if (!booking) return createError(401, 'Booking not exist')
         try {
@@ -113,7 +130,7 @@ const BookingServices = {
                     status: "APPROVED"
                 }
             })
-            sendMail(booking.user.email, "You booking approved by admin", `Your booked your parking at ${booking.bookingDateTime} for ${booking.bookingHours} hours`)
+            sendMail(booking.user.email, "You booking approved by admin", `Your booked your parking on ${booking.bookingStartDate.toLocaleDateString()}`,"")
             const allBookings = await prisma.bookings.findMany({
                 include: {
                     user: true

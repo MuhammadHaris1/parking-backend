@@ -48,6 +48,10 @@ const Mutation = {
     const response = await FeedbackServices.addFeedbackByUser(req)
     return response
   },
+  addFeedbackByAdmin: async (args, req) => {
+    const response = await FeedbackServices.addFeedbackByAdmin(req)
+    return response
+  },
 };
 
 module.exports = {

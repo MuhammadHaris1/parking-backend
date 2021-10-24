@@ -32,27 +32,27 @@ model Token {
 }
 
 model Bookings {
-  id              Int           @id @default(autoincrement())
-  location        String?
-  bookingDateTime DateTime?
-  bookingHours    String?
-  registrationNo  String?
-  selectedSlotNo  String?
-  status          BookingStatus @default(PENDING)
-  user            User?         @relation(fields: [userId], references: [id])
-  userId          Int?
-  Feedbacks       Feedbacks[]
-  createdAt       DateTime      @default(now())
+  id               Int           @id @default(autoincrement())
+  location         String?
+  bookingStartDate DateTime?
+  bookingEndDate   DateTime?
+  registrationNo   String?
+  selectedSlotNo   String?
+  status           BookingStatus @default(PENDING)
+  user             User?         @relation(fields: [userId], references: [id])
+  userId           Int?
+  Feedbacks        Feedbacks[]
+  createdAt        DateTime      @default(now())
 }
 
 model Feedbacks {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   message   String
-  user      User?    @relation(fields: [userId], references: [id])
+  user      User?     @relation(fields: [userId], references: [id])
   userId    Int?
   bookingId Int?
   Booking   Bookings? @relation(fields: [bookingId], references: [id])
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
 }
 
 enum Role {
